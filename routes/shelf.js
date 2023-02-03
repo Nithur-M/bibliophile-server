@@ -1,9 +1,9 @@
 import express from 'express';
 
-import { search } from '../controllers/books.js';
+import { addBook } from '../controllers/shelf.js';
 
 const router = express.Router();
 
-router.post('/search', search);
+router.put('/:category', addBook);
 
 export default router;
