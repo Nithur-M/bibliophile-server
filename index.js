@@ -30,3 +30,6 @@ const PORT = process.env.PORT || 3001;
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
 .then(() => app.listen(PORT, () => console.log(`Server running on port: ${PORT}`)))
 .catch((error) => console.log(error.message));
+
+// Export the Express API
+export default app;
