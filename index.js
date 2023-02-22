@@ -9,8 +9,9 @@ import decodeIDToken from './middleware/auth.js';
 import postRoutes from './routes/posts.js';
 import userRoutes from './routes/users.js';
 import bookRoutes from  './routes/books.js';
+import shelfRoutes from './routes/shelf.js';
 
-export const app = express();
+const app = express();
 dotenv.config();
 
 app.use(express.json({ limit: '30mb', extended: true }));
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(decodeIDToken);
 
+app.use('/shelf', shelfRoutes)
 app.use('/book', bookRoutes);
 app.use('/posts', postRoutes);
 app.use('/user', userRoutes);

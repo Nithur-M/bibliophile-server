@@ -5,11 +5,11 @@ export const addBook = async (req, res) => {
     try {
         const shelf = await Shelf.findOne({ uid: auth.uid});
         const book = {
-        title: req.body.title,
-        author: req.body.author,
-        cover: req.body.cover,
-        id: req.body.id,
-        addedDate: new Date()
+            title: req.body.title,
+            author: req.body.author,
+            cover: req.body.cover,
+            id: req.body.id,
+            addedDate: new Date()
         };
         switch (req.params.category) {
         case 'read':
@@ -28,5 +28,15 @@ export const addBook = async (req, res) => {
         res.send(shelf);
     } catch (error) {
         res.status(409).json({ message: error.message });
+    }
+}
+
+export const getShelf = async (req, res) => {
+    const auth = req.currentUser;
+    try {
+        const shelf = await Shelf.findOne({ uid: auth.uid});
+        res.status(201).json(shelf);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
     }
 }
