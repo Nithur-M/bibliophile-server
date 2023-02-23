@@ -3,8 +3,8 @@ export const search = async (req, res) => {
     try {
         const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=6`);
         const results = await response.json();
-        res.status(201).json(results.items);
+        res.status(200).json(results.items);
     } catch (error) {
-        res.status(409).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
