@@ -25,17 +25,17 @@ export const addBook = async (req, res) => {
             return res.status(400).send({ error: 'Invalid category' });
         }
         await shelf.save();
-        res.send(shelf);
+        res.status(201).json(shelf);
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
 }
 
 export const getShelf = async (req, res) => {
-    const auth = req.currentUser;
+    //const auth = req.currentUser;
     try {
-        const shelf = await Shelf.findOne({ uid: auth.uid});
-        res.status(201).json(shelf);
+        const shelf = await Shelf.findOne({ uid: "Vn7v2Jwrp7bKqodM17TjmR55Cr03"});
+        res.status(200).json(shelf);
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
