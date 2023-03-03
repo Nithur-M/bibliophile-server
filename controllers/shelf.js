@@ -3,11 +3,12 @@ import Shelf from '../models/shelf.js';
 export const addBook = async (req, res) => {
     const auth = req.currentUser;
     try {
-        const shelf = await Shelf.findOne({ uid: auth.uid});
+        const shelf = await Shelf.findOne({ uid: auth.uid });
         const book = {
             title: req.body.title,
             author: req.body.author,
             cover: req.body.cover,
+            year: req.body.year,
             id: req.body.id,
             addedDate: new Date()
         };
@@ -32,9 +33,9 @@ export const addBook = async (req, res) => {
 }
 
 export const getShelf = async (req, res) => {
-    //const auth = req.currentUser;
+    const auth = req.currentUser;
     try {
-        const shelf = await Shelf.findOne({ uid: "Vn7v2Jwrp7bKqodM17TjmR55Cr03"});
+        const shelf = await Shelf.findOne({ uid: auth.uid});
         res.status(200).json(shelf);
     } catch (error) {
         res.status(404).json({ message: error.message });
