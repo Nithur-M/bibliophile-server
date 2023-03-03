@@ -7,6 +7,7 @@ const shelfSchema = mongoose.Schema({
             title: String,
             author: [String],
             cover: String,
+            year: String,
             id: String,
             addedDate: Date
         }
@@ -16,6 +17,7 @@ const shelfSchema = mongoose.Schema({
             title: String,
             author: [String],
             cover: String,
+            year: String,
             id: String,
             addedDate: Date
         }
@@ -25,6 +27,7 @@ const shelfSchema = mongoose.Schema({
             title: String,
             author: [String],
             cover: String,
+            year: String,
             id: String,
             addedDate: Date
         }
