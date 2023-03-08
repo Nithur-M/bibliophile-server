@@ -5,6 +5,6 @@ import { addBook, getShelf } from '../controllers/shelf.js';
 const router = express.Router();
 
 router.get('/', getShelf);
-router.put('/:category', addBook);
+router.patch('/:category', addBook);
 
 export default router;

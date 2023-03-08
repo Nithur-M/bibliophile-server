@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const postSchema = mongoose.Schema({
   book_id: String,
   book_title: String,
+  book_cover: String,
   title: String,
   message: String,
   name: String,

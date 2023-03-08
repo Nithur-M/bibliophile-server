@@ -2,6 +2,7 @@ import Shelf from '../models/shelf.js';
 
 export const addBook = async (req, res) => {
     const auth = req.currentUser;
+
     try {
         const shelf = await Shelf.findOne({ uid: auth.uid });
         const book = {
