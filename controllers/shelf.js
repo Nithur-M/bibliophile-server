@@ -15,6 +15,26 @@ export const addBook = async (req, res) => {
     if (!shelf) {
       // Create a new shelf for the user
       shelf = new Shelf({ uid: auth.uid });
+    } else {
+      // Check if the book is already in any category and remove it from that category
+      for (let i = 0; i < shelf.readBooks.length; i++) {
+        if (shelf.readBooks[i].id === book.id) {
+          shelf.readBooks.splice(i, 1);
+          break;
+        }
+      }
+      for (let i = 0; i < shelf.currentlyReadingBooks.length; i++) {
+        if (shelf.currentlyReadingBooks[i].id === book.id) {
+          shelf.currentlyReadingBooks.splice(i, 1);
+          break;
+        }
+      }
+      for (let i = 0; i < shelf.toBeReadBooks.length; i++) {
+        if (shelf.toBeReadBooks[i].id === book.id) {
+          shelf.toBeReadBooks.splice(i, 1);
+          break;
+        }
+      }
     }
 
     switch (req.params.category) {
