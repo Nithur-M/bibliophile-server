@@ -18,19 +18,19 @@ export const addBook = async (req, res) => {
     } else {
       // Check if the book is already in any category and remove it from that category
       for (let i = 0; i < shelf.readBooks.length; i++) {
-        if (shelf.readBooks[i].id === book.id) {
+        if (shelf.readBooks[i]._id == book.id) {
           shelf.readBooks.splice(i, 1);
           break;
         }
       }
       for (let i = 0; i < shelf.currentlyReadingBooks.length; i++) {
-        if (shelf.currentlyReadingBooks[i].id === book.id) {
+        if (shelf.currentlyReadingBooks[i]._id === book.id) {
           shelf.currentlyReadingBooks.splice(i, 1);
           break;
         }
       }
       for (let i = 0; i < shelf.toBeReadBooks.length; i++) {
-        if (shelf.toBeReadBooks[i].id === book.id) {
+        if (shelf.toBeReadBooks[i]._id === book.id) {
           shelf.toBeReadBooks.splice(i, 1);
           break;
         }
@@ -50,7 +50,7 @@ export const addBook = async (req, res) => {
       default:
         return res.status(400).send({ error: "Invalid category" });
     }
-    await shelf.save();
+    //await shelf.save();
     res.status(201).json({ message: "successfully added to your shelf" });
   } catch (error) {
     res.status(409).json({ message: error.message });
