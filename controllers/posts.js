@@ -132,6 +132,21 @@ export const savePost = async (req, res) => {
     res.status(200).json(updatedPost);
 }
 
+export const getSaves = async (req, res) => {
+    const auth = req.currentUser;
+
+    if (!auth) {
+        return res.json({ message: "Unauthenticated" });
+      }
+    
+    try {
+        const savedPosts = await PostMessage.find({ saves: auth.uid });
+        res.json({ data: savedPosts });
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+}
+
 export const likePost = async (req, res) => {
     const auth = req.currentUser;
     const { id } = req.params;
