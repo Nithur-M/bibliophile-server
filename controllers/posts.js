@@ -6,7 +6,13 @@ import PostMessage from '../models/post.js';
 const router = express.Router();
 
 export const getPosts = async (req, res) => {
+    const auth = req.currentUser;
     const { page } = req.query;
+
+    if (!auth) {
+        return res.json({ message: "Unauthenticated" });
+      }
+
     
     try {
         const LIMIT = 8;
@@ -62,6 +68,10 @@ export const getPost = async (req, res) => {
 export const createPost = async (req, res) => {
     const auth = req.currentUser;
     const post = req.body;
+
+    if (!auth) {
+        return res.json({ message: "Unauthenticated" });
+      }
 
     const newPostMessage = new PostMessage({ ...post, creator: auth.uid, createdAt: new Date().toISOString() })
 
