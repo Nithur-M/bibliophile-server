@@ -13,7 +13,6 @@ export const getPosts = async (req, res) => {
         return res.json({ message: "Unauthenticated" });
       }
 
-    
     try {
         const LIMIT = 8;
         const startIndex = (Number(page) - 1) * LIMIT; // get the starting index of every page
@@ -42,10 +41,15 @@ export const getPostsBySearch = async (req, res) => {
 }
 
 export const getPostsByCreator = async (req, res) => {
-    const { name } = req.query;
+    const auth = req.currentUser;
+    const { creator } = req.query;
+
+    if (!auth) {
+        return res.json({ message: "Unauthenticated" });
+      }
 
     try {
-        const posts = await PostMessage.find({ name });
+        const posts = await PostMessage.find({ creator: creator });
 
         res.json({ data: posts });
     } catch (error) {    
