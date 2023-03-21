@@ -98,19 +98,35 @@ export const deletePost = async (req, res) => {
 }
 
 export const savePost = async (req, res) => {
+    const auth = req.currentUser;
     const { id } = req.params;
+
+    if (!auth) {
+        return res.json({ message: "Unauthenticated" });
+      }
 
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    await PostMessage.findByIdAndRemove(id);
+    const post = await PostMessage.findById(id);
 
-    res.json({ message: "Post deleted successfully." });
+    const index = post.saves.findIndex((id) => id ===String(auth.uid));
+
+    if (index === -1) {
+      post.saves.push(auth.uid);
+    } else {
+      post.saves = post.saves.filter((id) => id !== String(auth.uid));
+    }
+
+    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
+
+    res.status(200).json(updatedPost);
 }
 
 export const likePost = async (req, res) => {
+    const auth = req.currentUser;
     const { id } = req.params;
 
-    if (!req.userId) {
+    if (!auth) {
         return res.json({ message: "Unauthenticated" });
       }
 
@@ -118,12 +134,12 @@ export const likePost = async (req, res) => {
     
     const post = await PostMessage.findById(id);
 
-    const index = post.likes.findIndex((id) => id ===String(req.userId));
+    const index = post.likes.findIndex((id) => id ===String(auth.uid));
 
     if (index === -1) {
-      post.likes.push(req.userId);
+      post.likes.push(auth.uid);
     } else {
-      post.likes = post.likes.filter((id) => id !== String(req.userId));
+      post.likes = post.likes.filter((id) => id !== String(auth.uid));
     }
 
     const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
@@ -132,6 +148,7 @@ export const likePost = async (req, res) => {
 }
 
 export const commentPost = async (req, res) => {
+    const auth = req.currentUser;
     const { id } = req.params;
     const { value } = req.body;
 
