@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema({
   book_id: String,
@@ -13,10 +13,10 @@ const postSchema = mongoose.Schema({
   saves: { type: [String], default: [] },
   createdAt: {
     type: Date,
-    default: new Date()
-    }
+    default: new Date(),
+  },
 });
 
-const PostMessage = mongoose.model('Post', postSchema);
+const PostMessage = mongoose.model("Post", postSchema);
 
 export default PostMessage;
