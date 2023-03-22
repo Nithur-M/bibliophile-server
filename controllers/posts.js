@@ -188,7 +188,7 @@ export const commentPost = async (req, res) => {
 
     const post = await PostMessage.findById(id);
 
-    post.comments.push(comment);
+    post.comments.push({ ...comment, uid: auth.uid });
 
     const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
 
