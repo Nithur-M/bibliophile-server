@@ -154,6 +154,7 @@ export const getSaves = async (req, res) => {
 export const likePost = async (req, res) => {
     const auth = req.currentUser;
     const { id } = req.params;
+    const like = req.body;
 
     if (!auth) {
         return res.json({ message: "Unauthenticated" });
@@ -163,12 +164,12 @@ export const likePost = async (req, res) => {
     
     const post = await PostMessage.findById(id);
 
-    const index = post.likes.findIndex((id) => id ===String(auth.uid));
+    const index = post.likes.findIndex((like) => like.uid === String(auth.uid));
 
     if (index === -1) {
-      post.likes.push(auth.uid);
+      post.likes.push({ ...like, uid: auth.uid });
     } else {
-      post.likes = post.likes.filter((id) => id !== String(auth.uid));
+      post.likes.splice(index, 1);
     }
 
     const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });

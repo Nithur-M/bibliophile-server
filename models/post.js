@@ -26,7 +26,19 @@ const postSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  likes: { type: [String], default: [] },
+  likes: [{
+    uid: {
+      type: String,
+      required: true,
+    },
+    username: {
+        type: String,
+        required: true,
+    },
+    photoURL: {
+        type: String,
+    },
+  }],
   comments: [{
     comment: {
         type: String,
