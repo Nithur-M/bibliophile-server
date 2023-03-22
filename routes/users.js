@@ -4,7 +4,7 @@ import { getUser, deleteUser, getFriends } from '../controllers/users.js';
 
 const router = express.Router();
 
-router.get('/', getUser);
+router.get('/:id', getUser);
 router.get('/friends/:userId', getFriends);
 // router.put('/:id/follow'. followUser);
 // router.put('/:id/unfollow', unfollowUser)

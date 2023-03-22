@@ -6,13 +6,13 @@ const router = express.Router();
 
 router.get('/creator', getPostsByCreator);
 router.get('/search', getPostsBySearch);
+router.get('/getSaves', getSaves);
 router.get('/', getPosts);
 router.get('/:id', getPost);
 
 router.post('/', createPost);
 
 router.post('/:id', savePost);
-router.get('/:id/getSaves', getSaves)
 
 router.patch('/:id', updatePost);
 router.delete('/:id', deletePost);
