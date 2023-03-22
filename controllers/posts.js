@@ -179,7 +179,7 @@ export const likePost = async (req, res) => {
 export const commentPost = async (req, res) => {
     const auth = req.currentUser;
     const { id } = req.params;
-    const { value } = req.body;
+    const comment = req.body;
 
     if (!auth) {
         return res.json({ message: "Unauthenticated" });
@@ -188,7 +188,7 @@ export const commentPost = async (req, res) => {
 
     const post = await PostMessage.findById(id);
 
-    post.comments.push(value);
+    post.comments.push(comment);
 
     const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
 
