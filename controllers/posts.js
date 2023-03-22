@@ -82,7 +82,7 @@ export const createPost = async (req, res) => {
     try {
         await newPostMessage.save();
 
-        res.status(201).json(newPostMessage);
+        res.status(201).json({ message: "Your post was successful. Thank you for sharing!" });
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
@@ -133,7 +133,7 @@ export const savePost = async (req, res) => {
 
     const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
 
-    res.status(200).json(updatedPost);
+    res.status(201).json({ message: "successful" });
 }
 
 export const getSaves = async (req, res) => {
