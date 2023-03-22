@@ -123,7 +123,7 @@ export const savePost = async (req, res) => {
 
     const post = await PostMessage.findById(id);
 
-    const index = post.saves.findIndex((id) => id ===String(auth.uid));
+    const index = post.saves.findIndex((id) => id === String(auth.uid));
 
     if (index === -1) {
       post.saves.push(auth.uid);
