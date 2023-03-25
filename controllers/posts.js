@@ -1,199 +1,198 @@
-import express from 'express';
-import mongoose from 'mongoose';
+import express from "express";
+import mongoose from "mongoose";
 
-import PostMessage from '../models/post.js';
+import PostMessage from "../models/post.js";
 
 const router = express.Router();
 
 export const getPosts = async (req, res) => {
-    const auth = req.currentUser;
-    const { page } = req.query;
+  const auth = req.currentUser;
+  const { page } = req.query;
 
-    if (!auth) {
-        return res.json({ message: "Unauthenticated" });
-      }
+  if (!auth) {
+    return res.json({ message: "Unauthenticated" });
+  }
 
-    try {
-        const LIMIT = 8;
-        const startIndex = (Number(page) - 1) * LIMIT; // get the starting index of every page
-    
-        const total = await PostMessage.countDocuments({});
-        const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
+  try {
+    const LIMIT = 8;
+    const startIndex = (Number(page) - 1) * LIMIT; // get the starting index of every page
 
-        res.json({ data: posts, currentPage: Number(page), numberOfPages: Math.ceil(total / LIMIT)});
-    } catch (error) {    
-        res.status(404).json({ message: error.message });
-    }
-}
+    const total = await PostMessage.countDocuments({});
+    const posts = await PostMessage.find().sort({ _id: -1 }).limit(LIMIT).skip(startIndex);
+
+    res.json({ data: posts, currentPage: Number(page), numberOfPages: Math.ceil(total / LIMIT) });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
 export const getPostsBySearch = async (req, res) => {
-    const { searchQuery, tags } = req.query;
+  const { searchQuery, tags } = req.query;
 
-    try {
-        const title = new RegExp(searchQuery, "i");
+  try {
+    const title = new RegExp(searchQuery, "i");
 
-        const posts = await PostMessage.find({ $or: [ { title }, { tags: { $in: tags.split(',') } } ]});
+    const posts = await PostMessage.find({ $or: [{ title }, { tags: { $in: tags.split(",") } }] });
 
-        res.json({ data: posts });
-    } catch (error) {    
-        res.status(404).json({ message: error.message });
-    }
-}
+    res.json({ data: posts });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
 export const getPostsByCreator = async (req, res) => {
-    const auth = req.currentUser;
-    const { creator } = req.query;
+  const auth = req.currentUser;
+  const { creator } = req.query;
 
-    if (!auth) {
-        return res.json({ message: "Unauthenticated" });
-      }
+  if (!auth) {
+    return res.json({ message: "Unauthenticated" });
+  }
 
-    try {
-        const posts = await PostMessage.find({ creator: creator });
+  try {
+    const posts = await PostMessage.find({ creator: creator });
 
-        res.json({ data: posts });
-    } catch (error) {    
-        res.status(404).json({ message: error.message });
-    }
-}
+    res.json({ data: posts });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
-export const getPost = async (req, res) => { 
-    const { id } = req.params;
+export const getPost = async (req, res) => {
+  const { id } = req.params;
 
-    try {
-        const post = await PostMessage.findById(id);
-        
-        res.status(200).json(post);
-    } catch (error) {
-        res.status(404).json({ message: error.message });
-    }
-}
+  try {
+    const post = await PostMessage.findById(id);
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
 export const createPost = async (req, res) => {
-    const auth = req.currentUser;
-    const post = req.body;
+  const auth = req.currentUser;
+  const post = req.body;
 
-    if (!auth) {
-        return res.json({ message: "Unauthenticated" });
-      }
+  if (!auth) {
+    return res.json({ message: "Unauthenticated" });
+  }
 
-    const newPostMessage = new PostMessage({ ...post, creator: auth.uid, createdAt: new Date().toISOString() })
+  const newPostMessage = new PostMessage({ ...post, creator: auth.uid, createdAt: new Date().toISOString() });
 
-    try {
-        await newPostMessage.save();
+  try {
+    await newPostMessage.save();
 
-        res.status(201).json(newPostMessage);
-    } catch (error) {
-        res.status(409).json({ message: error.message });
-    }
-}
+    res.status(201).json({ message: "Your post was successful. Thank you for sharing!" });
+  } catch (error) {
+    res.status(409).json({ message: error.message });
+  }
+};
 
 export const updatePost = async (req, res) => {
-    const { id } = req.params;
-    const { title, message, creator, selectedFile, tags } = req.body;
-    
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
+  const { id } = req.params;
+  const { title, message, creator, selectedFile, tags } = req.body;
 
-    const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
+  if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
+  const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
 
-    res.json(updatedPost);
-}
+  await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
+
+  res.json(updatedPost);
+};
 
 export const deletePost = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
+  if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    await PostMessage.findByIdAndRemove(id);
+  await PostMessage.findByIdAndRemove(id);
 
-    res.json({ message: "Post deleted successfully." });
-}
+  res.json({ message: "Post deleted successfully." });
+};
 
 export const savePost = async (req, res) => {
-    const auth = req.currentUser;
-    const { id } = req.params;
+  const auth = req.currentUser;
+  const { id } = req.params;
 
-    if (!auth) {
-        return res.json({ message: "Unauthenticated" });
-      }
+  if (!auth) {
+    return res.json({ message: "Unauthenticated" });
+  }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
+  if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    const post = await PostMessage.findById(id);
+  const post = await PostMessage.findById(id);
 
-    const index = post.saves.findIndex((id) => id === String(auth.uid));
+  const index = post.saves.findIndex((id) => id === String(auth.uid));
 
-    if (index === -1) {
-      post.saves.push(auth.uid);
-    } else {
-      post.saves = post.saves.filter((id) => id !== String(auth.uid));
-    }
+  if (index === -1) {
+    post.saves.push(auth.uid);
+  } else {
+    post.saves = post.saves.filter((id) => id !== String(auth.uid));
+  }
 
-    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
+  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
 
-    res.status(200).json(updatedPost);
-}
+  res.status(201).json({ message: "successful" });
+};
 
 export const getSaves = async (req, res) => {
-    const auth = req.currentUser;
+  const auth = req.currentUser;
 
-    if (!auth) {
-        return res.json({ message: "Unauthenticated" });
-      }
-    
-    try {
-        const savedPosts = await PostMessage.find({ saves: auth.uid });
-        res.json({ data: savedPosts });
-    } catch (error) {
-        res.status(404).json({ message: error.message });
-    }
-}
+  if (!auth) {
+    return res.json({ message: "Unauthenticated" });
+  }
+
+  try {
+    const savedPosts = await PostMessage.find({ saves: auth.uid });
+    res.json({ data: savedPosts });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
 
 export const likePost = async (req, res) => {
-    const auth = req.currentUser;
-    const { id } = req.params;
-    const like = req.body;
+  const auth = req.currentUser;
+  const { id } = req.params;
+  const like = req.body;
 
-    if (!auth) {
-        return res.json({ message: "Unauthenticated" });
-      }
+  if (!auth) {
+    return res.json({ message: "Unauthenticated" });
+  }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
-    
-    const post = await PostMessage.findById(id);
+  if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    const index = post.likes.findIndex((like) => like.uid === String(auth.uid));
+  const post = await PostMessage.findById(id);
 
-    if (index === -1) {
-      post.likes.push({ ...like, uid: auth.uid });
-    } else {
-      post.likes.splice(index, 1);
-    }
+  const index = post.likes.findIndex((like) => like.uid === String(auth.uid));
 
-    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
+  if (index === -1) {
+    post.likes.push({ ...like, uid: auth.uid });
+  } else {
+    post.likes.splice(index, 1);
+  }
 
-    res.status(200).json(updatedPost);
-}
+  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
+
+  res.status(201).json({ message: "successful" });
+};
 
 export const commentPost = async (req, res) => {
-    const auth = req.currentUser;
-    const { id } = req.params;
-    const comment = req.body;
+  const auth = req.currentUser;
+  const { id } = req.params;
+  const comment = req.body;
 
-    if (!auth) {
-        return res.json({ message: "Unauthenticated" });
-      }
+  if (!auth) {
+    return res.json({ message: "Unauthenticated" });
+  }
 
+  const post = await PostMessage.findById(id);
 
-    const post = await PostMessage.findById(id);
+  post.comments.push({ ...comment, uid: auth.uid });
 
-    post.comments.push({ ...comment, uid: auth.uid });
+  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
 
-    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
-
-    res.json(updatedPost);
+  res.status(201).json({ message: "successful" });
 };
 
 export default router;
