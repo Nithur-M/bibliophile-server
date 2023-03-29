@@ -38,6 +38,6 @@ const shelfSchema = mongoose.Schema({
     }    
 });
 
-const ShelfMessage = mongoose.model('Shelf', shelfSchema);
+const Shelf = mongoose.model('Shelf', shelfSchema);
 
-export default ShelfMessage;
+export default Shelf;
