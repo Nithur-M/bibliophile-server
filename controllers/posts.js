@@ -18,7 +18,7 @@ export const getPosts = async (req, res) => {
     const shelf = await Shelf.findOne({ uid: auth.uid });
     const readBooks = shelf.readBooks.map(({ title: bookTitle }) => ({ bookTitle }));
 
-    const bookRecommendationsRes = await fetch("http://localhost:5000/predict", {
+    const bookRecommendationsRes = await fetch("http://127.0.0.1:5000/predict", {
       method: 'POST',
       headers: new Headers({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ books: readBooks }),
@@ -31,7 +31,7 @@ export const getPosts = async (req, res) => {
 
     // query the database to find posts with matching book titles
     const recommendedPosts = await PostMessage.find({ book_title: { $in: bookTitles } });
-    const otherPosts = await PostMessage.find();
+    const otherPosts = await PostMessage.find({ book_title: { $nin: bookTitles } });
     
     const posts = { recommendedPosts: recommendedPosts, otherPosts: otherPosts}
     res.status(200).json({ data: posts });
