@@ -4,7 +4,7 @@ Readers can track their shelf and talk about what they read. Hook is that they c
 We use a Machine learning algorithm to recommend posts to users based on their reading activity.
 
 ## Tech Stack
-Node.js
+Node.js \n
 Firebase for authentication
 Mongodb
 ML - Python, Scikit, Numpy, Pandas
