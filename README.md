@@ -5,9 +5,9 @@ We use a Machine learning algorithm to recommend posts to users based on their r
 
 ## Tech Stack
 Node.js <br/>
-Firebase for authentication
-Mongodb
-ML - Python, Scikit, Numpy, Pandas
+Firebase for authentication <br/>
+Mongodb <br/>
+ML - Python, Scikit, Numpy, Pandas <br/>
 
 We are using MVC pattern to write the backend of the application.
 
